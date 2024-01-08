@@ -56,16 +56,16 @@ class Prerenderer {
     const forwardSlash =
       prerenderUrl.indexOf('/', prerenderUrl.length - 1) !== -1 ? '' : '/';
 
-    let protocol = req.secure ? 'https' : 'http';
-    if (req.headers.get('cf-visitor')) {
-      const match = (req.headers.get('cf-visitor') as string).match(
-        /"scheme":"(http|https)"/
-      );
-      if (match) protocol = match[1];
-    }
-    if (req.headers.get('x-forwarded-proto')) {
-      protocol = (req.headers.get('x-forwarded-proto') as string).split(',')[0];
-    }
+    let protocol = 'https';
+    // if (req.headers.get('cf-visitor')) {
+    //   const match = (req.headers.get('cf-visitor') as string).match(
+    //     /"scheme":"(http|https)"/
+    //   );
+    //   if (match) protocol = match[1];
+    // }
+    // if (req.headers.get('x-forwarded-proto')) {
+    //   protocol = (req.headers.get('x-forwarded-proto') as string).split(',')[0];
+    // }
     const host = (req.headers.get('x-forwarded-host') || req.headers.get('host'));
     const fullUrl = protocol + '://' + host;
          
@@ -210,7 +210,6 @@ class Prerenderer {
       }
 
       const url = new URL(this.buildApiUrl(req));
-      console.info('prerendering url', url);
       const response = await fetch(
         url,
         Object.assign({}, options, { method: 'GET' })
