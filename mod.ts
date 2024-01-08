@@ -187,33 +187,32 @@ class Prerenderer {
     context: Context
   ): Promise<{ error: string | null; body: string | null }> {
     console.info('invoking prerender server');
-
-    const req = context.request;
-    const options: PrerenderOptions = { headers: {} };
-    const headers = options.headers as { [key: string]: string };
-
-    Object.assign(
-      options,
-      JSON.parse(JSON.stringify(this.prerenderServerRequestOptions))
-    );
-
-    if (this.forwardHeaders === true) {
-      req.headers.forEach(function (h) {
-        // Forwarding the host header can cause issues with server platforms that require it to match the URL
-        if (h == 'host') {
-          return;
-        }
-        headers[h] = req.headers.get(h) as string;
-      });
-    }
-    headers['User-Agent'] = req.headers.get('user-agent') as string;
-    headers['Accept-Encoding'] = 'gzip';
-    if (this.prerenderToken) {
-      headers['X-Prerender-Token'] = this.prerenderToken;
-    }
-
-    const url = new URL(this.buildApiUrl(req));
     try {
+      const req = context.request;
+      const options: PrerenderOptions = { headers: {} };
+      const headers = options.headers as { [key: string]: string };
+
+      Object.assign(
+        options,
+        JSON.parse(JSON.stringify(this.prerenderServerRequestOptions))
+      );
+
+      if (this.forwardHeaders === true) {
+        req.headers.forEach(function (h) {
+          // Forwarding the host header can cause issues with server platforms that require it to match the URL
+          if (h == 'host') {
+            return;
+          }
+          headers[h] = req.headers.get(h) as string;
+        });
+      }
+      headers['User-Agent'] = req.headers.get('user-agent') as string;
+      headers['Accept-Encoding'] = 'gzip';
+      if (this.prerenderToken) {
+        headers['X-Prerender-Token'] = this.prerenderToken;
+      }
+
+      const url = new URL(this.buildApiUrl(req));
       const response = await fetch(
         url,
         Object.assign({}, options, { method: 'GET' })
