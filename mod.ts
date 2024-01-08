@@ -120,7 +120,7 @@ class Prerenderer {
     const parsedUrl = request.url;
     //if it contains _escaped_fragment_, show prerendered page
     const parsedQuery = parsedUrl.searchParams;
-    if (parsedQuery && parsedQuery.get('_escaped_fragment_') !== undefined) {
+    if (parsedQuery && !!parsedQuery.get('_escaped_fragment_')) {
       isRequestingPrerenderedPage = true;
     }
 
@@ -140,7 +140,6 @@ class Prerenderer {
 
     //if it is a bot and is requesting a resource...dont prerender
     const parsedPathname = parsedUrl.pathname!.toLowerCase();
-    console.log(parsedPathname);
     if (
       EXTENSIONS_TO_IGNORE.some((extension: string) => {
         return parsedPathname.endsWith(extension);
