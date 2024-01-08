@@ -66,11 +66,9 @@ class Prerenderer {
     if (req.headers.get('x-forwarded-proto')) {
       protocol = (req.headers.get('x-forwarded-proto') as string).split(',')[0];
     }
-
-    const fullUrl =
-      protocol +
-      '://' +
-      (req.headers.get('x-forwarded-host') || req.headers.get('host')); //TODO: NOT SURE IF THIS IS CORRECT
+    const host = (req.headers.get('x-forwarded-host') || req.headers.get('host'));
+    const fullUrl = protocol + '://' + host;
+         
     return prerenderUrl + forwardSlash + fullUrl;
   }
 
@@ -212,6 +210,7 @@ class Prerenderer {
       }
 
       const url = new URL(this.buildApiUrl(req));
+      console.info('prerendering url', url);
       const response = await fetch(
         url,
         Object.assign({}, options, { method: 'GET' })
