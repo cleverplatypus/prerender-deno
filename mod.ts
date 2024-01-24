@@ -73,7 +73,6 @@ class Prerenderer {
   }
 
   async prerender(context: Context, next: Next) {
-    console.info('prerendering started');
     if (!this.shouldShowPrerenderedPage(context.request)) {
       return await next();
     }
