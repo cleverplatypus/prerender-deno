@@ -56,7 +56,7 @@ class Prerenderer {
     const forwardSlash =
       prerenderUrl.indexOf('/', prerenderUrl.length - 1) !== -1 ? '' : '/';
 
-    let protocol = 'https';
+    const protocol = 'https';
     // if (req.headers.get('cf-visitor')) {
     //   const match = (req.headers.get('cf-visitor') as string).match(
     //     /"scheme":"(http|https)"/
@@ -66,10 +66,14 @@ class Prerenderer {
     // if (req.headers.get('x-forwarded-proto')) {
     //   protocol = (req.headers.get('x-forwarded-proto') as string).split(',')[0];
     // }
-    const host = (req.headers.get('x-forwarded-host') || req.headers.get('host'));
-    const fullUrl = protocol + '://' + host;
+    const hostPort = (req.headers.get('x-forwarded-host') || req.headers.get('host'));
+    const url = new URL(`${protocol}://${hostPort}`);
+    url.pathname = req.url.pathname;
+    url.search = req.url.search;
+
+    const fullUrl = url.toString();
          
-    return prerenderUrl + forwardSlash + fullUrl;
+    return prerenderUrl + forwardSlash + fullUrl.toString();
   }
 
   async prerender(context: Context, next: Next) {
